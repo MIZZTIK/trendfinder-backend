@@ -1,4 +1,8 @@
 export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
   const { prompt } = req.body;
 
   if (!prompt) {
@@ -18,10 +22,12 @@ export default async function handler(req, res) {
       })
     });
 
-    if (!openaiRes.ok) {
+    const contentType = openaiRes.headers.get('content-type') || '';
+
+    if (!contentType.includes('application/json')) {
       const text = await openaiRes.text();
-      console.error('OpenAI Error Response:', text);
-      return res.status(openaiRes.status).json({ error: 'OpenAI API Error', details: text });
+      console.error('OpenAI responded with non-JSON:', text);
+      return res.status(500).json({ error: 'OpenAI API did not return JSON', details: text });
     }
 
     const data = await openaiRes.json();
