@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer YOUR_OPENAI_API_KEY`
+        'Authorization': `Bearer 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`
       },
       body: JSON.stringify({
         model: 'gpt-4',
