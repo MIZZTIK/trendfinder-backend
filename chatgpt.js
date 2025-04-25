@@ -18,10 +18,17 @@ export default async function handler(req, res) {
       })
     });
 
+    if (!openaiRes.ok) {
+      const text = await openaiRes.text();
+      console.error('OpenAI Error Response:', text);
+      return res.status(openaiRes.status).json({ error: 'OpenAI API Error', details: text });
+    }
+
     const data = await openaiRes.json();
     res.status(200).json(data);
 
   } catch (error) {
+    console.error('Server Error:', error);
     res.status(500).json({ error: 'Error fetching from OpenAI', details: error.message });
   }
 }
